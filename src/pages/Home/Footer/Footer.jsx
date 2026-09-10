@@ -18,7 +18,7 @@ import { ReactComponent as ZaloIcon } from '~/assets/zaloIcon.svg'
 import ZaloQRCode from '~/assets/qrZalo.jpg'
 import { Divider, Menu } from '@mui/material'
 
-export default function Footer({ display='flex' }) {
+export default function Footer({ display = 'flex' }) {
     const [emailValue, setEmailValue] = useState('')
     const [anchorQRZalo, setAnchorQRZalo] = useState(null)
     const [open, setOpen] = useState(false)
@@ -26,7 +26,7 @@ export default function Footer({ display='flex' }) {
     const emailInputRef = useRef()
     const navigate = useNavigate()
 
-    const styleLink = { 
+    const styleLink = {
         textDecoration: 'none',
         position: 'relative',
         color: '#f7878a',
@@ -64,7 +64,8 @@ export default function Footer({ display='flex' }) {
             return
         }
 
-        const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        const pattern =
+            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
         if (!pattern.test(emailValue)) {
             handleTooltipOpen()
             return
@@ -94,23 +95,26 @@ export default function Footer({ display='flex' }) {
         setAnchorQRZalo(null)
     }
     return (
-        <Box sx={{ width: { md: '100%' }, mt: '32px' }}>
-            <Box 
-                sx={{ 
-                    display: { display }, 
-                    flexDirection: 'column', 
-                    alignItems: 'center', 
+        <Box sx={{ width: { md: '100%' } }}>
+            <Box
+                sx={{
+                    display: { display },
+                    flexDirection: 'column',
+                    alignItems: 'center',
                     justifyContent: 'center',
                     gap: 3,
                     p: '48px',
                     textAlign: 'center',
                     bgcolor: '#efb7b814'
-                }}>
-                <Typography variant='h4' sx={{ fontWeight: 600 }}>Get started with Trello today</Typography>
-                <Box 
-                    sx={{ 
-                        display: 'flex', 
-                        justifyContent: { xs: 'center', md: 'flex-start' } 
+                }}
+            >
+                <Typography variant="h4" sx={{ fontWeight: 600 }}>
+                    Get started with Trello today
+                </Typography>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        justifyContent: { xs: 'center', md: 'flex-start' }
                     }}
                 >
                     <Tooltip
@@ -120,9 +124,11 @@ export default function Footer({ display='flex' }) {
                         disableHoverListener
                         disableTouchListener
                         arrow
-                        title={<Typography sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                            <ErrorOutline fontSize='small' /> The email address is invalid
-                        </Typography>} 
+                        title={
+                            <Typography sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                <ErrorOutline fontSize="small" /> The email address is invalid
+                            </Typography>
+                        }
                         slotProps={{
                             popper: {
                                 disablePortal: true
@@ -139,9 +145,9 @@ export default function Footer({ display='flex' }) {
                             }
                         }}
                     >
-                        <TextField 
+                        <TextField
                             inputRef={emailInputRef}
-                            sx={{ 
+                            sx={{
                                 mb: '12px',
                                 mr: '12px',
                                 display: { xs: 'none', md: 'block' },
@@ -149,10 +155,10 @@ export default function Footer({ display='flex' }) {
                                     p: '10px 14px'
                                 }
                             }}
-                            type='email' 
-                            placeholder='Email'
+                            type="email"
+                            placeholder="Email"
                             value={emailValue}
-                            aria-describedby="my-helper-text" 
+                            aria-describedby="my-helper-text"
                             onChange={handleSetEmailValue}
                             onKeyDown={(e) => {
                                 if (!(e.key === 'Enter')) return
@@ -161,11 +167,11 @@ export default function Footer({ display='flex' }) {
                         />
                     </Tooltip>
 
-                    <Button 
-                        sx={{ 
-                            mb: '12px', 
-                            bgcolor: '#ffb1b3', 
-                            color: 'white', 
+                    <Button
+                        sx={{
+                            mb: '12px',
+                            bgcolor: '#ffb1b3',
+                            color: 'white',
                             height: '43px',
                             lineHeight: '1.4',
                             '&:hover': {
@@ -175,91 +181,106 @@ export default function Footer({ display='flex' }) {
                             }
                         }}
                         onClick={handleSendEmailToAuthForm}
-                        variant='outlined'
+                        variant="outlined"
                     >
-                            Sign up - it&apos;s free!
+                        Sign up - it&apos;s free!
                     </Button>
                 </Box>
                 <Typography>
                     By entering my email, I acknowledge the
-                    <Box component={Link} to='#' sx={styleLink}> Atlassian Privacy Policy </Box>
+                    <Box component={Link} to="#" sx={styleLink}>
+                        {' '}
+                        Atlassian Privacy Policy{' '}
+                    </Box>
                 </Typography>
             </Box>
 
-            <Box 
-                sx={{ 
-                    bgcolor: theme => theme.trelloCustom.myColor
-                }}>
+            <Box
+                sx={{
+                    bgcolor: (theme) => theme.trelloCustom.myColor
+                }}
+            >
                 <Container
-                    sx={{ 
-                        display: 'flex', 
-                        flexDirection: { xs: 'column', sm: 'row' }, 
-                        alignItems: 'center', 
+                    sx={{
+                        display: 'flex',
+                        flexDirection: { xs: 'column', sm: 'row' },
+                        alignItems: 'center',
                         justifyContent: display === 'none' ? 'center' : 'space-between',
                         gap: 2,
                         textAlign: 'center',
                         color: 'white'
                     }}
                 >
-                    <Box 
-                        sx={{ 
-                            p: '16px', 
-                            gap: 2, 
-                            textAlign: 'center', 
+                    <Box
+                        sx={{
+                            p: '16px',
+                            gap: 2,
+                            textAlign: 'center',
                             display: { display },
                             flexDirection: 'column'
-                        }}>
-                        <Typography variant='h6' sx={{ mb: '12px', fontSize: '1.4rem' }}>
-                            Trang web được tạo nên dựa trên giao diện của 
+                        }}
+                    >
+                        <Typography variant="h6" sx={{ mb: '12px', fontSize: '1.4rem' }}>
+                            Trang web được tạo nên dựa trên giao diện của
                         </Typography>
-                        <Box component={Link} to='https://trello.com/' sx={{ cursor: 'pointer' }}>
-                            <TrelloWebIcon/>
+                        <Box component={Link} to="https://trello.com/" sx={{ cursor: 'pointer' }}>
+                            <TrelloWebIcon />
                         </Box>
                     </Box>
                     <Box sx={{ p: '28px' }}>
-                        <Typography variant='h6' sx={{ fontWeight: 600, mb: '12px', fontSize: '1.4rem' }}>Liên hệ với tôi qua:</Typography>
+                        <Typography variant="h6" sx={{ fontWeight: 600, mb: '12px', fontSize: '1.4rem' }}>
+                            Liên hệ với tôi qua:
+                        </Typography>
                         <Box
-                            sx={{ 
-                                display: 'flex', 
-                                flexDirection: 'row', 
-                                alignItems: 'center', 
+                            sx={{
+                                display: 'flex',
+                                flexDirection: 'row',
+                                alignItems: 'center',
                                 justifyContent: 'center',
                                 gap: 1
                             }}
                         >
-                            <Box component={'a'} href='https://www.facebook.com/saru.an.169/' target="_blank" rel="noopener noreferrer">
-                                <FacebookOutlined sx={styleIcon}/>
+                            <Box
+                                component={'a'}
+                                href="https://www.facebook.com/saru.an.169/"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                <FacebookOutlined sx={styleIcon} />
                             </Box>
-        
-                            <Box component={'a'} href='https://www.instagram.com/pdphuoc_ordinary/' target="_blank" rel="noopener noreferrer">
-                                <Instagram sx={styleIcon}/>
+
+                            <Box
+                                component={'a'}
+                                href="https://www.instagram.com/pdphuoc_ordinary/"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                <Instagram sx={styleIcon} />
                             </Box>
-        
-                            <Box component={'a'} href='mailto:phandinhphuoc02@gmail.com'>
-                                <Email sx={styleIcon}/>
+
+                            <Box component={'a'} href="mailto:phandinhphuoc02@gmail.com">
+                                <Email sx={styleIcon} />
                             </Box>
 
                             <Box component={Button} onClick={handleClickQRZalo} sx={{ p: 0, pb: '4px', minWidth: 0 }}>
-                                <SvgIcon component={ZaloIcon} fontSize='large' inheritViewBox sx={styleIcon}/>
+                                <SvgIcon component={ZaloIcon} fontSize="large" inheritViewBox sx={styleIcon} />
                             </Box>
-                            <Menu
-                                anchorEl={anchorQRZalo}
-                                open={openQRZalo}
-                                onClose={handleCloseQRZalo}
-                            >
-                                <Box className='qrZaloCode'
-                                    component={'img'} 
+                            <Menu anchorEl={anchorQRZalo} open={openQRZalo} onClose={handleCloseQRZalo}>
+                                <Box
+                                    className="qrZaloCode"
+                                    component={'img'}
                                     src={ZaloQRCode}
-                                    sx={{ 
-                                        width: '200px', 
+                                    sx={{
+                                        width: '200px',
                                         height: '200px'
-                                    }}>
-                                </Box>
+                                    }}
+                                ></Box>
                             </Menu>
-                            <Divider orientation='vertical' flexItem sx={{ borderColor: 'white' }}/>
+                            <Divider orientation="vertical" flexItem sx={{ borderColor: 'white' }} />
                             <Box
-                                component={'a'} href='https://cv.fullstack.edu.vn/view/50a59a03-d012-4aa7-9f7d-c3581e906d03?token=rMzDCgAkeAS4CcwOG4G0WCgoSCwOgCW'
-                                sx={{ 
+                                component={'a'}
+                                href="https://cv.fullstack.edu.vn/view/50a59a03-d012-4aa7-9f7d-c3581e906d03?token=rMzDCgAkeAS4CcwOG4G0WCgoSCwOgCW"
+                                sx={{
                                     ...styleIcon,
                                     height: '32px',
                                     width: '32px',
@@ -269,7 +290,9 @@ export default function Footer({ display='flex' }) {
                                     border: '1px solid',
                                     borderColor: 'white',
                                     borderRadius: '50%'
-                                }}>CV
+                                }}
+                            >
+                                CV
                             </Box>
                         </Box>
                     </Box>
