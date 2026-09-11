@@ -23,17 +23,17 @@ export default function HomeMenuXS() {
     const barStyle = {
         width: '35px',
         height: '4px',
-        backgroundColor: theme => theme.trelloCustom.myColor,
+        backgroundColor: (theme) => theme.trelloCustom.myColor,
         margin: '6px 0',
         transition: '0.4s'
     }
     return (
         <>
             <Button
-                onClick={toggleDrawer} 
-                fontSize='large' 
-                sx={{ 
-                    color: theme => theme.trelloCustom.myColor, 
+                onClick={toggleDrawer}
+                fontSize="large"
+                sx={{
+                    color: (theme) => theme.trelloCustom.myColor,
                     display: { xs: 'block', md: 'none' },
                     cursor: 'pointer',
                     ml: 'auto',
@@ -61,7 +61,7 @@ export default function HomeMenuXS() {
             </Button>
 
             <Drawer
-                anchor='right'
+                anchor="right"
                 open={openDrawerMenu}
                 onClose={toggleDrawer}
                 sx={{
@@ -78,36 +78,33 @@ export default function HomeMenuXS() {
                     }
                 }}
             >
-                <List
-                    sx={{ width: { xs: '100%', sm: '400px' }, bgcolor: 'background.paper' }}
-                    component="nav"
-                >
-                    <FeaturesXS/>
-                    <SolutionsXS/>
-                    <PlansXS/>
-                    <ResourcesXS/>
+                <List sx={{ width: { xs: '100%', sm: '400px' }, bgcolor: 'background.paper' }} component="nav">
+                    <FeaturesXS />
+                    <SolutionsXS />
+                    <PlansXS />
+                    <ResourcesXS />
 
-                    <ListItemButton 
-                        component={Link} 
-                        to='/pricing'
-                        sx={{ 
-                            color: '#f0777acc', 
-                            '& .MuiListItemText-root .MuiTypography-root.MuiTypography-body1': { 
+                    <ListItemButton
+                        component={Link}
+                        to="/pricing"
+                        sx={{
+                            color: '#f0777acc',
+                            '& .MuiListItemText-root .MuiTypography-root.MuiTypography-body1': {
                                 fontWeight: 600,
                                 fontSize: '1rem'
-                            } 
+                            }
                         }}
                     >
-                        <ListItemText 
-                            primary="Pricing" 
-                        />
+                        <ListItemText primary="Pricing" />
                     </ListItemButton>
-                    <Divider/>
+
+                    <Divider />
+
                     <Box
-                        component={Link} 
-                        to='/auth' 
-                        sx={{ 
-                            textDecoration: 'none', 
+                        component={Link}
+                        to="/auth"
+                        sx={{
+                            textDecoration: 'none',
                             width: '90%',
                             m: '12px auto 0',
                             fontWeight: 600,
@@ -119,23 +116,24 @@ export default function HomeMenuXS() {
                             bgcolor: (theme) => theme.trelloCustom.myColor,
                             '&:hover': {
                                 bgcolor: '#f0777acc'
-                            } 
-                        }}  
+                            }
+                        }}
                     >
-                        <Typography 
-                            sx={{ 
-                                height: '50px', 
-                                lineHeight: '50px', 
+                        <Typography
+                            sx={{
+                                height: '50px',
+                                lineHeight: '50px',
                                 fontWeight: 600,
                                 '&.MuiTypography-root.MuiTypography-body1': {
                                     fontSize: '1.1rem'
                                 }
                             }}
-                        >Login</Typography>
+                        >
+                            Login
+                        </Typography>
                     </Box>
                 </List>
             </Drawer>
         </>
-       
     )
 }

@@ -43,7 +43,7 @@ export default function Auth() {
         })
     }, [])
 
-    const handleLogin = async() => {
+    const handleLogin = async () => {
         const data = childrenLoginRef.current?.getChildrenRef()
         if (!data) return
 
@@ -58,7 +58,7 @@ export default function Auth() {
         navigate('/trello')
     }
 
-    const handleRegister = async() => {
+    const handleRegister = async () => {
         const data = childrenRegisterRef.current?.getChildrenValue()
         handleChildModalRegisterProcessingOpen()
         const result = await registerApi(data)
@@ -76,7 +76,6 @@ export default function Auth() {
         setMessageRegister(result.message)
         return
     }
-    
 
     const handleSetTitle = () => {
         titleForm === 'register' ? handleTitleLoginForm() : handleTitleRegisterForm()
@@ -109,40 +108,58 @@ export default function Auth() {
     return (
         <Box sx={{ height: '100vh' }}>
             <Container>
-                <Box 
-                    sx={{ 
+                <Box
+                    sx={{
                         display: 'flex',
                         justifyContent: 'space-between',
                         alignContent: 'center',
                         height: '56px',
                         p: '0 12px',
-                        borderBlockEnd: theme => theme.palette.mode === 'dark' ? `1px solid ${theme.palette.primary.light}` : '1px solid #091E4240', 
-                        backgroundColor: (theme) => theme.palette.mode === 'dark' ? '#121212' : 'white' 
-                    }}>
-                    <Link style={{ display: 'flex', alignItems: 'center', gap: 0.5, cursor: 'pointer', textDecoration: 'none' }} to='/'>
-                        <SvgIcon component={TrelloIcon} fontSize='small' inheritViewBox sx={{ color:  '#ff9a9cc4' }}/>
-                        <Typography variant='span' 
-                            sx={{ ml: '4px', 
-                                fontSize: '1rem', 
-                                fontWeight: 'bold', 
-                                color:  '#ff9a9cc4',
-                                display: { xs: 'none', sm: 'block' } 
-                            }}>Sariii nè!</Typography>
+                        borderBlockEnd: (theme) =>
+                            theme.palette.mode === 'dark'
+                                ? `1px solid ${theme.palette.primary.light}`
+                                : '1px solid #091E4240',
+                        backgroundColor: (theme) => (theme.palette.mode === 'dark' ? '#121212' : 'white')
+                    }}
+                >
+                    <Link
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 0.5,
+                            cursor: 'pointer',
+                            textDecoration: 'none'
+                        }}
+                        to="/"
+                    >
+                        <SvgIcon component={TrelloIcon} fontSize="small" inheritViewBox sx={{ color: '#ff9a9cc4' }} />
+                        <Typography
+                            variant="span"
+                            sx={{
+                                ml: '4px',
+                                fontSize: '1rem',
+                                fontWeight: 'bold',
+                                color: '#ff9a9cc4',
+                                display: { xs: 'none', sm: 'block' }
+                            }}
+                        >
+                            Sariii nè!
+                        </Typography>
                     </Link>
                 </Box>
             </Container>
             <Box sx={{ backgroundColor: '#ffeef8', height: '100%' }}>
-                <Container 
-                    sx={{ 
+                <Container
+                    sx={{
                         width: '100%',
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
                         justifyContent: 'space-around'
-                    }}    
+                    }}
                 >
                     <MyTabs>
-                        <Box 
+                        <Box
                             sx={{
                                 position: 'relative',
                                 minWidth: { xs: '300px', sm: '580px', md: '844px', lg: '100%' },
@@ -151,24 +168,25 @@ export default function Auth() {
                                 height: '610px',
                                 maxHeight: '610px',
                                 mt: '12px',
-                                backgroundColor: (theme) => theme.palette.mode === 'dark' ? '#111111' : '#ffeef8',
-                                backgroundImage: (theme) => 
-                                    theme.palette.mode === 'dark' ? 
-                                        { xs: 'none', sm: `url(${bgImageFormLoginDarkMD})` } : 
-                                        { xs: 'none', sm: `url(${bgImageFormLoginLightMD})` },
+                                backgroundColor: (theme) => (theme.palette.mode === 'dark' ? '#111111' : '#ffeef8'),
+                                backgroundImage: (theme) =>
+                                    theme.palette.mode === 'dark'
+                                        ? { xs: 'none', sm: `url(${bgImageFormLoginDarkMD})` }
+                                        : { xs: 'none', sm: `url(${bgImageFormLoginLightMD})` },
                                 backgroundSize: { sm: 'cover', md: 'cover' },
                                 backgroundRepeat: 'no-repeat',
                                 backgroundPosition: 'right bottom'
                             }}
                         >
-                            <Box 
-                                sx={{ 
-                                    bgcolor: (theme) => theme.palette.mode === 'dark' ? theme.palette.background.default : 'white',
-                                    width: { xs:'100%', sm: '324px', md: '424px' }, 
-                                    height: { xs:'100%', sm: '96%', md: '96%' },
+                            <Box
+                                sx={{
+                                    bgcolor: (theme) =>
+                                        theme.palette.mode === 'dark' ? theme.palette.background.default : 'white',
+                                    width: { xs: '100%', sm: '324px', md: '424px' },
+                                    height: { xs: '100%', sm: '96%', md: '96%' },
                                     maxHeight: '610px',
                                     borderRadius: '6px',
-                                    m: { xs:'0', sm: '12px' },
+                                    m: { xs: '0', sm: '12px' },
                                     p: '16px 24px 24px'
                                 }}
                             >
@@ -176,30 +194,35 @@ export default function Auth() {
                                     <MyTabList>
                                         <MyTabItem
                                             onClick={handleSetTitle}
-                                            myStyleChild={{ textTransform: 'upperCase' }} 
-                                            handleTitleLoginForm={handleTitleLoginForm} 
-                                            value={0} 
-                                            active={activeUnderLine.login}>
-                                                Đăng nhập
+                                            myStyleChild={{ textTransform: 'upperCase' }}
+                                            handleTitleLoginForm={handleTitleLoginForm}
+                                            value={0}
+                                            active={activeUnderLine.login}
+                                        >
+                                            Đăng nhập
                                         </MyTabItem>
-    
+
                                         <MyTabItem
                                             onClick={handleSetTitle}
-                                            myStyleChild={{ textTransform: 'upperCase' }} 
-                                            handleTitleRegisterForm={handleTitleRegisterForm} 
+                                            myStyleChild={{ textTransform: 'upperCase' }}
+                                            handleTitleRegisterForm={handleTitleRegisterForm}
                                             value={1}
-                                            active={activeUnderLine.register}>
+                                            active={activeUnderLine.register}
+                                        >
                                             Đăng ký
                                         </MyTabItem>
                                     </MyTabList>
-    
-                                    <MyTabPanel value={0}><Login ref={childrenLoginRef} onClick={handleLogin}/></MyTabPanel>                    
-    
-                                    <MyTabPanel value={1}><Register ref={childrenRegisterRef} onClick={handleRegister}/></MyTabPanel>
-                                    
+
+                                    <MyTabPanel value={0}>
+                                        <Login ref={childrenLoginRef} onClick={handleLogin} />
+                                    </MyTabPanel>
+
+                                    <MyTabPanel value={1}>
+                                        <Register ref={childrenRegisterRef} onClick={handleRegister} />
+                                    </MyTabPanel>
                                 </MyTabs>
                             </Box>
-                            <Box 
+                            <Box
                                 sx={{
                                     display: { xs: 'none', sm: 'flex', md: 'flex' },
                                     justifyContent: 'center',
@@ -209,7 +232,7 @@ export default function Auth() {
                                     right: { sm: '22px', md: '22px' },
                                     width: { sm: '210px', md: '255px' },
                                     height: '240px',
-                                    backgroundColor: (theme) => theme.palette.mode === 'dark' ? '#ff9a9cc4' : 'white',
+                                    backgroundColor: (theme) => (theme.palette.mode === 'dark' ? '#ff9a9cc4' : 'white'),
                                     border: '2px solid',
                                     borderColor: (theme) => theme.palette.primary.main,
                                     borderRadius: '10px',
@@ -221,7 +244,7 @@ export default function Auth() {
                                         content: '""',
                                         position: 'absolute',
                                         bottom: '-18px',
-                                        left: { md: '50%' }, 
+                                        left: { md: '50%' },
                                         width: 0,
                                         height: 0,
                                         borderLeft: '10px solid transparent',
@@ -230,35 +253,38 @@ export default function Auth() {
                                     }
                                 }}
                             >
-                                <Typography 
-                                    sx={{ 
-                                        fontFamily: 'El Messiri', 
-                                        fontWeight: 800, 
-                                        color: (theme) => theme.palette.mode === 'dark' ? 'black' : '#ff9a9cc4',
+                                <Typography
+                                    sx={{
+                                        fontFamily: 'El Messiri',
+                                        fontWeight: 800,
+                                        color: (theme) => (theme.palette.mode === 'dark' ? 'black' : '#ff9a9cc4'),
                                         textAlign: 'center',
                                         lineHeight: { sm: '2.8rem', md: '2.6rem' },
                                         '&.MuiTypography-body1': { fontSize: { sm: '2.5rem', md: '2.4rem' } }
                                     }}
-                                    variant='body1'
+                                    variant="body1"
                                 >
-                                    { titleForm === 'login' ? 'Đăng nhập thôi nàooooo!' : 'Tạo mới tài khoản ngay thôiiiii!'}
+                                    {titleForm === 'login'
+                                        ? 'Đăng nhập thôi nàooooo!'
+                                        : 'Tạo mới tài khoản ngay thôiiiii!'}
                                 </Typography>
                             </Box>
                         </Box>
-                        
-                        <Modal 
+
+                        <Modal
                             open={openChildModal}
                             onClose={handleChildModalClose}
                             aria-labelledby="child-modal-title"
-                            aria-describedby="child-modal-description">
-                            <Box 
+                            aria-describedby="child-modal-description"
+                        >
+                            <Box
                                 sx={{
                                     position: 'absolute',
                                     top: '50%',
                                     left: '50%',
                                     transform: 'translate(-50%, -50%)',
                                     width: 400,
-                                    bgcolor: (theme) => theme.palette.mode === 'dark' ? '#080808' : 'white',
+                                    bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#080808' : 'white'),
                                     border: '2px solid',
                                     borderRadius: '20px',
                                     borderColor: '#ff9a9cc4',
@@ -267,106 +293,38 @@ export default function Auth() {
                                     textAlign: 'center'
                                 }}
                             >
-                                <SentimentDissatisfied fontSize='large' sx={{ color: '#ff9a9cc4' }}/>
-                                <Typography 
-                                    id="modal-modal-description" 
+                                <SentimentDissatisfied fontSize="large" sx={{ color: '#ff9a9cc4' }} />
+                                <Typography
+                                    id="modal-modal-description"
                                     sx={{
-                                        textAlign: 'center', 
-                                        m: '0 12px 12px', 
-                                        fontFamily: 'El Messiri', 
-                                        fontSize: '1.8rem', 
+                                        textAlign: 'center',
+                                        m: '0 12px 12px',
+                                        fontFamily: 'El Messiri',
+                                        fontSize: '1.8rem',
                                         color: '#ff9a9cc4',
                                         fontWeight: { sm: 700, md: 800 },
                                         '&.MuiTypography-body1': { fontSize: { sm: '1.8rem', md: '2.4rem' } }
-                                    }}>
-                                    Tài khoản hoặc mật khẩu không chính xác nhé bae 
+                                    }}
+                                >
+                                    Tài khoản hoặc mật khẩu không chính xác nhé bae
                                 </Typography>
                             </Box>
                         </Modal>
-    
-                        <Modal 
+
+                        <Modal
                             open={childModalLoginProcessing}
                             onClose={handleChildModalLoginProcessingClose}
                             aria-labelledby="child-modal-title"
-                            aria-describedby="child-modal-description">
-                            <Box 
+                            aria-describedby="child-modal-description"
+                        >
+                            <Box
                                 sx={{
                                     position: 'absolute',
                                     top: '50%',
                                     left: '50%',
                                     transform: 'translate(-50%, -50%)',
                                     width: 400,
-                                    bgcolor: (theme) => theme.palette.mode === 'dark' ? '#080808' : 'white',
-                                    border: '2px solid',
-                                    borderRadius: '20px',
-                                    borderColor: '#ff9a9cc4',
-                                    boxShadow: 12,
-                                    p: 1, 
-                                    textAlign:'center'
-                                }}
-                            >   
-                                <Typography 
-                                    sx={{ 
-                                        m: '0 12px 12px', 
-                                        fontFamily: 'El Messiri', 
-                                        fontSize: '1.8rem', 
-                                        color: '#ff9a9cc4',
-                                        fontWeight: { sm: 700, md: 800 },
-                                        '&.MuiTypography-body1': { fontSize: { sm: '1.8rem', md: '2.4rem' } }
-                                    }}
-                                >Đang đăng nhập</Typography>
-                                <CircularProgress sx={{ color: '#ff9a9cc4' }}/>
-                            </Box>
-                        </Modal>
-    
-                        <Modal 
-                            open={childModalRegisterProcessing}
-                            onClose={handleChildModalRegisterProcessingClose}
-                            aria-labelledby="child-modal-title"
-                            aria-describedby="child-modal-description">
-                            <Box 
-                                sx={{
-                                    position: 'absolute',
-                                    top: '50%',
-                                    left: '50%',
-                                    transform: 'translate(-50%, -50%)',
-                                    width: 400,
-                                    bgcolor: (theme) => theme.palette.mode === 'dark' ? '#080808' : 'white',
-                                    border: '2px solid',
-                                    borderRadius: '20px',
-                                    borderColor: '#ff9a9cc4',
-                                    boxShadow: 12,
-                                    p: 1, 
-                                    textAlign:'center'
-                                }}
-                            >   
-                                <Typography 
-                                    sx={{ 
-                                        m: '0 12px 12px', 
-                                        fontFamily: 'El Messiri', 
-                                        fontSize: '1.8rem', 
-                                        color: '#ff9a9cc4',
-                                        fontWeight: { sm: 700, md: 800 },
-                                        '&.MuiTypography-body1': { fontSize: { sm: '1.8rem', md: '2.4rem' } }
-                                    }}
-                                >Đang đăng ký tài khoản</Typography>
-                                <CircularProgress sx={{ color: '#ff9a9cc4' }}/>
-                            </Box>
-                        </Modal>
-        
-                        <Modal 
-                            open={openChildModalRegistering}
-                            onClose={handleChildModalRegisteringClose}
-                            aria-labelledby="child-modal-title"
-                            aria-describedby="child-modal-description">
-                            <Box 
-                                sx={{
-                                    position: 'absolute',
-                                    top: '50%',
-                                    left: '50%',
-                                    transform: 'translate(-50%, -50%)',
-                                    width: 400,
-                                    bgcolor: (theme) => theme.palette.mode === 'dark' ? '#080808' : 'white',
+                                    bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#080808' : 'white'),
                                     border: '2px solid',
                                     borderRadius: '20px',
                                     borderColor: '#ff9a9cc4',
@@ -375,25 +333,102 @@ export default function Auth() {
                                     textAlign: 'center'
                                 }}
                             >
-                                <Face2Outlined fontSize='large' sx={{ color: '#ff9a9cc4' }}/>
-                                <Typography 
-                                    id="modal-modal-description" 
+                                <Typography
                                     sx={{
-                                        textAlign: 'center', 
-                                        m: '0 12px 12px', 
-                                        fontFamily: 'El Messiri', 
-                                        fontSize: '1.8rem', 
+                                        m: '0 12px 12px',
+                                        fontFamily: 'El Messiri',
+                                        fontSize: '1.8rem',
                                         color: '#ff9a9cc4',
                                         fontWeight: { sm: 700, md: 800 },
                                         '&.MuiTypography-body1': { fontSize: { sm: '1.8rem', md: '2.4rem' } }
-                                    }}>
-                                    { messageRigister } 
+                                    }}
+                                >
+                                    Đang đăng nhập
+                                </Typography>
+                                <CircularProgress sx={{ color: '#ff9a9cc4' }} />
+                            </Box>
+                        </Modal>
+
+                        <Modal
+                            open={childModalRegisterProcessing}
+                            onClose={handleChildModalRegisterProcessingClose}
+                            aria-labelledby="child-modal-title"
+                            aria-describedby="child-modal-description"
+                        >
+                            <Box
+                                sx={{
+                                    position: 'absolute',
+                                    top: '50%',
+                                    left: '50%',
+                                    transform: 'translate(-50%, -50%)',
+                                    width: 400,
+                                    bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#080808' : 'white'),
+                                    border: '2px solid',
+                                    borderRadius: '20px',
+                                    borderColor: '#ff9a9cc4',
+                                    boxShadow: 12,
+                                    p: 1,
+                                    textAlign: 'center'
+                                }}
+                            >
+                                <Typography
+                                    sx={{
+                                        m: '0 12px 12px',
+                                        fontFamily: 'El Messiri',
+                                        fontSize: '1.8rem',
+                                        color: '#ff9a9cc4',
+                                        fontWeight: { sm: 700, md: 800 },
+                                        '&.MuiTypography-body1': { fontSize: { sm: '1.8rem', md: '2.4rem' } }
+                                    }}
+                                >
+                                    Đang đăng ký tài khoản
+                                </Typography>
+                                <CircularProgress sx={{ color: '#ff9a9cc4' }} />
+                            </Box>
+                        </Modal>
+
+                        <Modal
+                            open={openChildModalRegistering}
+                            onClose={handleChildModalRegisteringClose}
+                            aria-labelledby="child-modal-title"
+                            aria-describedby="child-modal-description"
+                        >
+                            <Box
+                                sx={{
+                                    position: 'absolute',
+                                    top: '50%',
+                                    left: '50%',
+                                    transform: 'translate(-50%, -50%)',
+                                    width: 400,
+                                    bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#080808' : 'white'),
+                                    border: '2px solid',
+                                    borderRadius: '20px',
+                                    borderColor: '#ff9a9cc4',
+                                    boxShadow: 12,
+                                    p: 1,
+                                    textAlign: 'center'
+                                }}
+                            >
+                                <Face2Outlined fontSize="large" sx={{ color: '#ff9a9cc4' }} />
+                                <Typography
+                                    id="modal-modal-description"
+                                    sx={{
+                                        textAlign: 'center',
+                                        m: '0 12px 12px',
+                                        fontFamily: 'El Messiri',
+                                        fontSize: '1.8rem',
+                                        color: '#ff9a9cc4',
+                                        fontWeight: { sm: 700, md: 800 },
+                                        '&.MuiTypography-body1': { fontSize: { sm: '1.8rem', md: '2.4rem' } }
+                                    }}
+                                >
+                                    {messageRigister}
                                 </Typography>
                             </Box>
                         </Modal>
                     </MyTabs>
                 </Container>
-                <Footer display={'none'}/>
+                <Footer display={'none'} />
             </Box>
         </Box>
     )
