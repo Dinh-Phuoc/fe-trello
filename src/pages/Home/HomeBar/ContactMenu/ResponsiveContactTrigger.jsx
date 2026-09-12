@@ -7,7 +7,7 @@ import { useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
 
 // Me
-import { ContactTriggerDesktop } from '~/pages/Home/HomeBar/HomeBar.styled.jsx'
+import { ContactTriggerDesktop } from '~/pages/Home/HomeBar/HomeBar.styled'
 
 const COMPACT_BREAKPOINT = 400
 

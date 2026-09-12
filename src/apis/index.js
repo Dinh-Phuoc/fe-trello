@@ -72,9 +72,15 @@ export const registerApi = async (infoAccount) => {
     return response.data
 }
 
+// Call Api for Login with Google
+export const googleAuthApi = async (credential) => {
+    const response = await instance.post(`${AUTH_ROOT}/auth/google`, { credential })
+    return response.data
+}
+
 // Call the Api to get the User's information
 export const getInforUserApi = async () => {
-    const response = await instance.get(`${API_ROOT}/v1/manage/users/profile`)
+    const response = await instance.get(`${AUTH_ROOT}/auth/profile`)
     return response.data
 }
 // Call Api for upload Image

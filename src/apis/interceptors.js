@@ -2,7 +2,7 @@ import axios from 'axios'
 import { refreshApi } from '.'
 
 const instance = axios.create({
-    withCredentials: true, 
+    withCredentials: true,
     headers: {
         'Content-Type': 'application/json'
     }
@@ -10,6 +10,7 @@ const instance = axios.create({
 
 let isRefreshing = false
 let failedQueue = []
+let redirectingToAuth = false // ← Guard: tránh redirect nhiều lần
 
 const processQueue = (error, token = null) => {
     failedQueue.forEach(prom => {
@@ -19,40 +20,46 @@ const processQueue = (error, token = null) => {
     failedQueue = []
 }
 
+const redirectToAuth = () => {
+    if (redirectingToAuth) return
+    redirectingToAuth = true
+    localStorage.setItem('currentPath', window.location.pathname)
+
+    window.location.replace('/auth')
+    redirectingToAuth = false
+}
+
 // RESPONSE INTERCEPTOR
 instance.interceptors.response.use(
-    response => {
-        if (response.config.url.includes('auth/login')) {
-            const path = '/trello' || '/'
-            window.location.href = path
-        }
-        return response
-    },
+    response => response,
     async error => {
-        if (error.config.url.includes('auth/login') || error.config.url.includes('auth/register')) {
+        // Login/register/google: trả về response để component tự xử lý error
+        if (error.config.url.includes('auth/login') ||
+            error.config.url.includes('auth/register') ||
+            error.config.url.includes('auth/google')) {
             return error.response
         }
 
         const originalRequest = error.config
 
-        if ((error.response?.status === 401 || error.response?.status === 403 ) && !originalRequest._retry) {
+        if ((error.response?.status === 401 || error.response?.status === 403) && !originalRequest._retry) {
             if (isRefreshing) {
-                localStorage.setItem('currentPath', window.location.pathname)
-                window.location.href = '/auth'
+                redirectToAuth()
                 return Promise.reject(error)
             }
-            
+
             originalRequest._retry = true
             isRefreshing = true
             try {
-                await refreshApi() 
+                await refreshApi()
                 processQueue(null)
+                isRefreshing = false
                 return instance(originalRequest)
             } catch (err) {
                 processQueue(err, null)
-                return Promise.reject(err)
-            } finally {
                 isRefreshing = false
+                redirectToAuth()
+                return Promise.reject(err)
             }
         }
         return Promise.reject(error)

@@ -13,7 +13,6 @@ import './index.css'
 import theme from './assets/theme.js'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-    // <React.StrictMode>
     <BrowserRouter>
         <CssVarsProvider theme={theme}>
             <ConfirmProvider>
@@ -25,5 +24,4 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             </ConfirmProvider>
         </CssVarsProvider>
     </BrowserRouter>
-    // </React.StrictMode>
 )
