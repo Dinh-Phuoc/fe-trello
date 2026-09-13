@@ -22,6 +22,7 @@ const MyTabItem = ({ notLine = false, myStyle, myStyleChild, typeWrapper = 'Box'
         onClick,
         ...props
     }
+    
     let TypeWrapper
     if (typeWrapper === 'Box') TypeWrapper = Box
     if (typeWrapper === 'Button') TypeWrapper = Button

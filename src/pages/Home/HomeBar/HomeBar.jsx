@@ -1,11 +1,12 @@
 // React Lib
 import { useEffect, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
 
 // MUI Lib
 import { useTheme as useMuiTheme } from '@mui/material/styles'
 
-// styled-components
-import { ThemeProvider as SCThemeProvider } from 'styled-components'
+// Emotion
+import { ThemeProvider as SCThemeProvider } from '@emotion/react'
 
 // Me
 import HomeMenu from './HomeMenu/HomeMenu'
@@ -24,7 +25,7 @@ import {
     RightDesktopGroup,
     InnerFlex,
     LoginLink
-} from './HomeBar.styled.jsx'
+} from './HomeBar.styled'
 
 export default function HomeBar() {
     const [scrolled, setScrolled] = useState(false)
@@ -65,7 +66,9 @@ export default function HomeBar() {
 
                 {/* === Right: desktop login + contact menu === */}
                 <RightDesktopGroup>
-                    <LoginLink to="/auth">Login</LoginLink>
+                    <LoginLink as={Link} to="/auth">
+                        Login
+                    </LoginLink>
                     <InnerFlex>
                         <ContactMenu
                             buttonId="basic-button-desktop"

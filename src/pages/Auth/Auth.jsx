@@ -1,58 +1,115 @@
-import Box from '@mui/material/Box'
-import CircularProgress from '@mui/material/CircularProgress'
-import Modal from '@mui/material/Modal'
-import SvgIcon from '@mui/material/SvgIcon'
-import Typography from '@mui/material/Typography'
-import Container from '@mui/material/Container'
-import Face2Outlined from '@mui/icons-material/Face2Outlined'
-import SentimentDissatisfied from '@mui/icons-material/SentimentDissatisfied'
-
+// React Lib
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useEffect, useRef, useState } from 'react'
 
-import { loginApi, registerApi } from '~/apis'
+// MUI Lib
+import Container from '@mui/material/Container'
+import SvgIcon from '@mui/material/SvgIcon'
+
+// Google OAuth
+import { GoogleOAuthProvider } from '@react-oauth/google'
+
+// Project
+import { googleAuthApi, loginApi, registerApi } from '~/apis'
 import MyTabs from '~/components/Tabs/store/MyTabs'
 import MyTabList from '~/components/Tabs/MyTabList'
 import MyTabItem from '~/components/Tabs/MyTabItem'
 import MyTabPanel from '~/components/Tabs/MyTabPanel'
 import Login from '~/components/AppBar/Menus/Login'
 import Register from '~/components/AppBar/Menus/Register'
-
 import { ReactComponent as TrelloIcon } from '~/assets/trelloIcon.svg'
-import bgImageFormLoginLightMD from '~/assets/loginformlight.jpg'
-import bgImageFormLoginDarkMD from '~/assets/loginformdark.jpg'
+
+// Local
 import Footer from '../Home/Footer/Footer'
+import ResultModal from './ResultModal'
+import ProcessingModal from './ProcessingModal'
+import {
+    AuthRoot,
+    HeaderBar,
+    LogoLink,
+    LogoText,
+    PageBackground,
+    FormCard,
+    CalloutBubble,
+    CalloutText,
+    StyledContainer
+} from './Auth.styled'
+
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID
+
+const ERROR_MESSAGE = 'Tài khoản hoặc mật khẩu không chính xác nhé bae'
+const GOOGLE_ERROR_MESSAGE = 'Đăng nhập bằng Google thất bại, thử lại nhé!'
+
+const calloutMessages = {
+    login: 'Đăng nhập thôi nàooooo!',
+    register: 'Tạo mới tài khoản ngay thôiiiii!'
+}
+
+const initialModalState = {
+    loginError: false,
+    loginProcessing: false,
+    registerProcessing: false,
+    registerResult: false
+}
+
+// Cấu hình modal - data-driven approach
+const MODAL_CONFIG = [
+    {
+        key: 'loginError',
+        Component: ResultModal,
+        variant: 'error',
+        getMessage: () => ERROR_MESSAGE
+    },
+    {
+        key: 'loginProcessing',
+        Component: ProcessingModal,
+        getMessage: () => 'Đang đăng nhập'
+    },
+    {
+        key: 'registerProcessing',
+        Component: ProcessingModal,
+        getMessage: () => 'Đang đăng ký tài khoản'
+    }
+]
 
 export default function Auth() {
-    const [openChildModal, setOpenChildModal] = useState(false)
-    const [activeUnderLine, setActiveUnderLine] = useState({ login: true, register: false })
-    const [childModalLoginProcessing, setChildModalLoginProcessing] = useState(false)
-    const [messageRigister, setMessageRegister] = useState('')
-    const [openChildModalRegistering, setOpenChildModalRegistering] = useState(false)
-    const [childModalRegisterProcessing, setChildModalRegisterProcessing] = useState(false)
-    const [titleForm, setTitleForm] = useState('login')
-    const childrenLoginRef = useRef()
-    const childrenRegisterRef = useRef()
     const navigate = useNavigate()
 
+    const [activeUnderLine, setActiveUnderLine] = useState({
+        login: true,
+        register: false
+    })
+    const [modals, setModals] = useState(initialModalState)
+    const [titleForm, setTitleForm] = useState('login')
+    const [registerMessage, setRegisterMessage] = useState('')
+
+    const childrenLoginRef = useRef()
+    const childrenRegisterRef = useRef()
+
     useEffect(() => {
-        const register = !!localStorage.getItem('register')
-        setActiveUnderLine({
-            login: register ? false : true,
-            register
-        })
+        const isRegister = !!localStorage.getItem('register')
+        setActiveUnderLine({ login: !isRegister, register: isRegister })
     }, [])
 
+    // ===== Modal helpers =====
+    const toggleModal = (key, value) =>
+        setModals((prev) => ({ ...prev, [key]: value }))
+
+    const openModal = (key) => toggleModal(key, true)
+    const closeModal = (key) => toggleModal(key, false)
+
+    // ===== Handlers =====
     const handleLogin = async () => {
         const data = childrenLoginRef.current?.getChildrenRef()
         if (!data) return
 
-        handleChildModalLoginProcessingOpen()
+        openModal('loginProcessing')
         const resultLogin = await loginApi(data)
-        handleChildModalLoginProcessingClose()
+        closeModal('loginProcessing')
 
-        if (!resultLogin.isSuccess) {
-            handleChildModalOpen()
+        if (!resultLogin?.isSuccess) {
+            setRegisterMessage(ERROR_MESSAGE)
+            openModal('loginError')
             return
         }
         navigate('/trello')
@@ -60,376 +117,157 @@ export default function Auth() {
 
     const handleRegister = async () => {
         const data = childrenRegisterRef.current?.getChildrenValue()
-        handleChildModalRegisterProcessingOpen()
+        openModal('registerProcessing')
+
         const result = await registerApi(data)
+
         if (result.status === 409) {
-            handleChildModalRegisterProcessingClose()
-            handleChildModalRegisteringOpen()
-            setMessageRegister(result.message)
+            closeModal('registerProcessing')
+            openModal('registerResult')
+            setRegisterMessage(result.message)
             return
         }
-        localStorage.getItem('email') && localStorage.removeItem('email')
-        localStorage.getItem('register') && localStorage.removeItem('register')
+
+        if (localStorage.getItem('email')) localStorage.removeItem('email')
+        if (localStorage.getItem('register')) localStorage.removeItem('register')
+
         setActiveUnderLine({ login: true, register: false })
-        handleChildModalRegisterProcessingClose()
-        handleChildModalRegisteringOpen()
-        setMessageRegister(result.message)
-        return
+        closeModal('registerProcessing')
+        openModal('registerResult')
+        setRegisterMessage(result.message)
     }
 
-    const handleSetTitle = () => {
-        titleForm === 'register' ? handleTitleLoginForm() : handleTitleRegisterForm()
+    const handleGoogleSuccess = async (credential) => {
+        try {
+            openModal('loginProcessing')
+            const result = await googleAuthApi(credential)
+            closeModal('loginProcessing')
+
+            if (!result?.isSuccess) {
+                setRegisterMessage(result?.message || GOOGLE_ERROR_MESSAGE)
+                openModal('loginError')
+                return
+            }
+
+            navigate('/trello')
+        } catch (err) {
+            closeModal('loginProcessing')
+            setRegisterMessage(GOOGLE_ERROR_MESSAGE)
+            openModal('loginError')
+        }
     }
 
-    const handleTitleLoginForm = () => {
-        setTitleForm('login')
+    const handleGoogleError = () => {
+        setRegisterMessage(GOOGLE_ERROR_MESSAGE)
+        openModal('loginError')
     }
 
-    const handleTitleRegisterForm = () => {
-        setTitleForm('register')
-    }
+    const handleSetTitle = () =>
+        setTitleForm((prev) => (prev === 'register' ? 'login' : 'register'))
 
-    // Modal Child Login
-    const handleChildModalOpen = () => setOpenChildModal(true)
-    const handleChildModalClose = () => setOpenChildModal(false)
-
-    // ChildModalLoginProcessing
-    const handleChildModalLoginProcessingOpen = () => setChildModalLoginProcessing(true)
-    const handleChildModalLoginProcessingClose = () => setChildModalLoginProcessing(false)
-
-    // Modal Child Register
-    const handleChildModalRegisteringOpen = () => setOpenChildModalRegistering(true)
-    const handleChildModalRegisteringClose = () => setOpenChildModalRegistering(false)
-
-    // ChildModalLoginProcessing
-    const handleChildModalRegisterProcessingOpen = () => setChildModalRegisterProcessing(true)
-    const handleChildModalRegisterProcessingClose = () => setChildModalRegisterProcessing(false)
+    const calloutText = useMemo(
+        () => calloutMessages[titleForm] || calloutMessages.login,
+        [titleForm]
+    )
 
     return (
-        <Box sx={{ height: '100vh' }}>
-            <Container>
-                <Box
-                    sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignContent: 'center',
-                        height: '56px',
-                        p: '0 12px',
-                        borderBlockEnd: (theme) =>
-                            theme.palette.mode === 'dark'
-                                ? `1px solid ${theme.palette.primary.light}`
-                                : '1px solid #091E4240',
-                        backgroundColor: (theme) => (theme.palette.mode === 'dark' ? '#121212' : 'white')
-                    }}
-                >
-                    <Link
-                        style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 0.5,
-                            cursor: 'pointer',
-                            textDecoration: 'none'
-                        }}
-                        to="/"
-                    >
-                        <SvgIcon component={TrelloIcon} fontSize="small" inheritViewBox sx={{ color: '#ff9a9cc4' }} />
-                        <Typography
-                            variant="span"
-                            sx={{
-                                ml: '4px',
-                                fontSize: '1rem',
-                                fontWeight: 'bold',
-                                color: '#ff9a9cc4',
-                                display: { xs: 'none', sm: 'block' }
-                            }}
-                        >
-                            Sariii nè!
-                        </Typography>
-                    </Link>
-                </Box>
-            </Container>
-            <Box sx={{ backgroundColor: '#ffeef8', height: '100%' }}>
-                <Container
-                    sx={{
-                        width: '100%',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyContent: 'space-around'
-                    }}
-                >
-                    <MyTabs>
-                        <Box
-                            sx={{
-                                position: 'relative',
-                                minWidth: { xs: '300px', sm: '580px', md: '844px', lg: '100%' },
-                                maxWidth: { xs: '300px', sm: '890px', md: '844px', lg: '100%' },
-                                width: { xs: '95%', sm: '80%' },
-                                height: '610px',
-                                maxHeight: '610px',
-                                mt: '12px',
-                                backgroundColor: (theme) => (theme.palette.mode === 'dark' ? '#111111' : '#ffeef8'),
-                                backgroundImage: (theme) =>
-                                    theme.palette.mode === 'dark'
-                                        ? { xs: 'none', sm: `url(${bgImageFormLoginDarkMD})` }
-                                        : { xs: 'none', sm: `url(${bgImageFormLoginLightMD})` },
-                                backgroundSize: { sm: 'cover', md: 'cover' },
-                                backgroundRepeat: 'no-repeat',
-                                backgroundPosition: 'right bottom'
-                            }}
-                        >
-                            <Box
-                                sx={{
-                                    bgcolor: (theme) =>
-                                        theme.palette.mode === 'dark' ? theme.palette.background.default : 'white',
-                                    width: { xs: '100%', sm: '324px', md: '424px' },
-                                    height: { xs: '100%', sm: '96%', md: '96%' },
-                                    maxHeight: '610px',
-                                    borderRadius: '6px',
-                                    m: { xs: '0', sm: '12px' },
-                                    p: '16px 24px 24px'
-                                }}
-                            >
+        <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+            <AuthRoot>
+                <Container>
+                    <HeaderBar>
+                        <LogoLink as={Link} to="/">
+                            <SvgIcon
+                                component={TrelloIcon}
+                                fontSize="small"
+                                inheritViewBox
+                                sx={{ color: '#ff9a9cc4' }}
+                            />
+                            <LogoText variant="span">Sariii nè!</LogoText>
+                        </LogoLink>
+                    </HeaderBar>
+                </Container>
+
+                <PageBackground>
+                    <StyledContainer maxWidth="md">
+                        <MyTabs>
+                            <FormCard>
                                 <MyTabs>
                                     <MyTabList>
                                         <MyTabItem
                                             onClick={handleSetTitle}
                                             myStyleChild={{ textTransform: 'upperCase' }}
-                                            handleTitleLoginForm={handleTitleLoginForm}
+                                            handleTitleLoginForm={() => setTitleForm('login')}
                                             value={0}
                                             active={activeUnderLine.login}
                                         >
-                                            Đăng nhập
+                                                            Đăng nhập
                                         </MyTabItem>
 
                                         <MyTabItem
                                             onClick={handleSetTitle}
                                             myStyleChild={{ textTransform: 'upperCase' }}
-                                            handleTitleRegisterForm={handleTitleRegisterForm}
+                                            handleTitleRegisterForm={() => setTitleForm('register')}
                                             value={1}
                                             active={activeUnderLine.register}
                                         >
-                                            Đăng ký
+                                                            Đăng ký
                                         </MyTabItem>
                                     </MyTabList>
 
                                     <MyTabPanel value={0}>
-                                        <Login ref={childrenLoginRef} onClick={handleLogin} />
+                                        <Login
+                                            ref={childrenLoginRef}
+                                            onClick={handleLogin}
+                                            onGoogleSuccess={handleGoogleSuccess}
+                                            onGoogleError={handleGoogleError}
+                                        />
                                     </MyTabPanel>
 
                                     <MyTabPanel value={1}>
-                                        <Register ref={childrenRegisterRef} onClick={handleRegister} />
+                                        <Register
+                                            ref={childrenRegisterRef}
+                                            onClick={handleRegister}
+                                            onGoogleSuccess={handleGoogleSuccess}
+                                            onGoogleError={handleGoogleError}
+                                        />
                                     </MyTabPanel>
                                 </MyTabs>
-                            </Box>
-                            <Box
-                                sx={{
-                                    display: { xs: 'none', sm: 'flex', md: 'flex' },
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    position: 'absolute',
-                                    top: { sm: '12px', md: '12px' },
-                                    right: { sm: '22px', md: '22px' },
-                                    width: { sm: '210px', md: '255px' },
-                                    height: '240px',
-                                    backgroundColor: (theme) => (theme.palette.mode === 'dark' ? '#ff9a9cc4' : 'white'),
-                                    border: '2px solid',
-                                    borderColor: (theme) => theme.palette.primary.main,
-                                    borderRadius: '10px',
-                                    padding: '15px 20px',
-                                    maxWidth: '250px',
-                                    fontSize: '16px',
-                                    boxShadow: '3px 3px 0px #ff9a9cc4',
-                                    '&::after': {
-                                        content: '""',
-                                        position: 'absolute',
-                                        bottom: '-18px',
-                                        left: { md: '50%' },
-                                        width: 0,
-                                        height: 0,
-                                        borderLeft: '10px solid transparent',
-                                        borderRight: '10px solid transparent',
-                                        borderTop: '15px solid #ff9a9cc4'
-                                    }
-                                }}
-                            >
-                                <Typography
-                                    sx={{
-                                        fontFamily: 'El Messiri',
-                                        fontWeight: 800,
-                                        color: (theme) => (theme.palette.mode === 'dark' ? 'black' : '#ff9a9cc4'),
-                                        textAlign: 'center',
-                                        lineHeight: { sm: '2.8rem', md: '2.6rem' },
-                                        '&.MuiTypography-body1': { fontSize: { sm: '2.5rem', md: '2.4rem' } }
-                                    }}
-                                    variant="body1"
-                                >
-                                    {titleForm === 'login'
-                                        ? 'Đăng nhập thôi nàooooo!'
-                                        : 'Tạo mới tài khoản ngay thôiiiii!'}
-                                </Typography>
-                            </Box>
-                        </Box>
+                            </FormCard>
+                        </MyTabs>
 
-                        <Modal
-                            open={openChildModal}
-                            onClose={handleChildModalClose}
-                            aria-labelledby="child-modal-title"
-                            aria-describedby="child-modal-description"
-                        >
-                            <Box
-                                sx={{
-                                    position: 'absolute',
-                                    top: '50%',
-                                    left: '50%',
-                                    transform: 'translate(-50%, -50%)',
-                                    width: 400,
-                                    bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#080808' : 'white'),
-                                    border: '2px solid',
-                                    borderRadius: '20px',
-                                    borderColor: '#ff9a9cc4',
-                                    boxShadow: 12,
-                                    p: 1,
-                                    textAlign: 'center'
-                                }}
-                            >
-                                <SentimentDissatisfied fontSize="large" sx={{ color: '#ff9a9cc4' }} />
-                                <Typography
-                                    id="modal-modal-description"
-                                    sx={{
-                                        textAlign: 'center',
-                                        m: '0 12px 12px',
-                                        fontFamily: 'El Messiri',
-                                        fontSize: '1.8rem',
-                                        color: '#ff9a9cc4',
-                                        fontWeight: { sm: 700, md: 800 },
-                                        '&.MuiTypography-body1': { fontSize: { sm: '1.8rem', md: '2.4rem' } }
-                                    }}
-                                >
-                                    Tài khoản hoặc mật khẩu không chính xác nhé bae
-                                </Typography>
-                            </Box>
-                        </Modal>
+                        <CalloutBubble>
+                            <CalloutText variant="body1">{calloutText}</CalloutText>
+                        </CalloutBubble>
+                    </StyledContainer>
 
-                        <Modal
-                            open={childModalLoginProcessing}
-                            onClose={handleChildModalLoginProcessingClose}
-                            aria-labelledby="child-modal-title"
-                            aria-describedby="child-modal-description"
-                        >
-                            <Box
-                                sx={{
-                                    position: 'absolute',
-                                    top: '50%',
-                                    left: '50%',
-                                    transform: 'translate(-50%, -50%)',
-                                    width: 400,
-                                    bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#080808' : 'white'),
-                                    border: '2px solid',
-                                    borderRadius: '20px',
-                                    borderColor: '#ff9a9cc4',
-                                    boxShadow: 12,
-                                    p: 1,
-                                    textAlign: 'center'
-                                }}
-                            >
-                                <Typography
-                                    sx={{
-                                        m: '0 12px 12px',
-                                        fontFamily: 'El Messiri',
-                                        fontSize: '1.8rem',
-                                        color: '#ff9a9cc4',
-                                        fontWeight: { sm: 700, md: 800 },
-                                        '&.MuiTypography-body1': { fontSize: { sm: '1.8rem', md: '2.4rem' } }
-                                    }}
-                                >
-                                    Đang đăng nhập
-                                </Typography>
-                                <CircularProgress sx={{ color: '#ff9a9cc4' }} />
-                            </Box>
-                        </Modal>
+                </PageBackground>
 
-                        <Modal
-                            open={childModalRegisterProcessing}
-                            onClose={handleChildModalRegisterProcessingClose}
-                            aria-labelledby="child-modal-title"
-                            aria-describedby="child-modal-description"
-                        >
-                            <Box
-                                sx={{
-                                    position: 'absolute',
-                                    top: '50%',
-                                    left: '50%',
-                                    transform: 'translate(-50%, -50%)',
-                                    width: 400,
-                                    bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#080808' : 'white'),
-                                    border: '2px solid',
-                                    borderRadius: '20px',
-                                    borderColor: '#ff9a9cc4',
-                                    boxShadow: 12,
-                                    p: 1,
-                                    textAlign: 'center'
-                                }}
-                            >
-                                <Typography
-                                    sx={{
-                                        m: '0 12px 12px',
-                                        fontFamily: 'El Messiri',
-                                        fontSize: '1.8rem',
-                                        color: '#ff9a9cc4',
-                                        fontWeight: { sm: 700, md: 800 },
-                                        '&.MuiTypography-body1': { fontSize: { sm: '1.8rem', md: '2.4rem' } }
-                                    }}
-                                >
-                                    Đang đăng ký tài khoản
-                                </Typography>
-                                <CircularProgress sx={{ color: '#ff9a9cc4' }} />
-                            </Box>
-                        </Modal>
+                <Footer display="none" />
 
-                        <Modal
-                            open={openChildModalRegistering}
-                            onClose={handleChildModalRegisteringClose}
-                            aria-labelledby="child-modal-title"
-                            aria-describedby="child-modal-description"
-                        >
-                            <Box
-                                sx={{
-                                    position: 'absolute',
-                                    top: '50%',
-                                    left: '50%',
-                                    transform: 'translate(-50%, -50%)',
-                                    width: 400,
-                                    bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#080808' : 'white'),
-                                    border: '2px solid',
-                                    borderRadius: '20px',
-                                    borderColor: '#ff9a9cc4',
-                                    boxShadow: 12,
-                                    p: 1,
-                                    textAlign: 'center'
-                                }}
-                            >
-                                <Face2Outlined fontSize="large" sx={{ color: '#ff9a9cc4' }} />
-                                <Typography
-                                    id="modal-modal-description"
-                                    sx={{
-                                        textAlign: 'center',
-                                        m: '0 12px 12px',
-                                        fontFamily: 'El Messiri',
-                                        fontSize: '1.8rem',
-                                        color: '#ff9a9cc4',
-                                        fontWeight: { sm: 700, md: 800 },
-                                        '&.MuiTypography-body1': { fontSize: { sm: '1.8rem', md: '2.4rem' } }
-                                    }}
-                                >
-                                    {messageRigister}
-                                </Typography>
-                            </Box>
-                        </Modal>
-                    </MyTabs>
-                </Container>
-                <Footer display={'none'} />
-            </Box>
-        </Box>
+                {/* Render modals theo config - DRY principle */}
+                {MODAL_CONFIG.map(({ key, getMessage, Component, variant }) => {
+                    if (!modals[key]) return null
+                    return (
+                        <Component
+                            key={key}
+                            open={modals[key]}
+                            onClose={() => closeModal(key)}
+                            message={getMessage()}
+                            {...(variant && { variant })}
+                        />
+                    )
+                })}
+
+                {/* registerResult cần state động - tách riêng */}
+                {modals.registerResult && (
+                    <ResultModal
+                        open={modals.registerResult}
+                        onClose={() => closeModal('registerResult')}
+                        message={registerMessage}
+                        variant="success"
+                    />
+                )}
+            </AuthRoot>
+        </GoogleOAuthProvider>
     )
 }

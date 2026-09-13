@@ -1,0 +1,105 @@
+// ============================================================
+// Auth.module.scss - SCSS module bổ sung cho Auth page
+// Dùng cho các utility classes, animation, breakpoints phức tạp
+// ============================================================
+
+// ===== Variables =====
+$primary-pink: #ff9a9cc4;
+$bg-light: #ffeef8;
+$paper-dark: #111111;
+$modal-bg-dark: #080808;
+$border-light: #091E4240;
+$header-bg-dark: #121212;
+
+// ===== Mixins =====
+@mixin flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@mixin absolute-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+// ===== Modal overlay =====
+.modalRoot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .MuiBackdrop-root {
+        background-color: rgba(0, 0, 0, 0.45);
+        backdrop-filter: blur(2px);
+    }
+}
+
+// ===== Tab item override =====
+.tabItem {
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+
+    &:hover {
+        color: $primary-pink;
+    }
+}
+
+// ===== Speech bubble triangle - hỗ trợ thêm =====
+.calloutTriangle {
+    position: absolute;
+    bottom: -18px;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 15px solid $primary-pink;
+}
+
+// ===== Form card responsive =====
+.formResponsive {
+    @media (max-width: 599px) {
+        min-width: 300px !important;
+        max-width: 300px !important;
+        width: 95% !important;
+    }
+}
+
+// ===== Animation keyframes =====
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.85);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.modalBoxAnimated {
+    animation: fadeInScale 0.25s ease-out;
+
+    .icon {
+        animation: pulse 1.5s ease-in-out infinite;
+    }
+}
+
+// ===== Hover effect cho callout =====
+.calloutHover {
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 5px 5px 0px $primary-pink;
+    }
+}

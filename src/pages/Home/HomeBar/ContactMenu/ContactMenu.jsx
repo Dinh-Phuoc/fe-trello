@@ -22,7 +22,7 @@ import {
     QrImage,
     StyledDivider,
     QrTooltip
-} from '~/pages/Home/HomeBar/HomeBar.styled.jsx'
+} from '~/pages/Home/HomeBar/HomeBar.styled'
 
 const ICON_MAP = {
     FacebookOutlined,

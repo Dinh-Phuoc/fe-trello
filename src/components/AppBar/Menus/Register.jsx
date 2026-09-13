@@ -1,8 +1,9 @@
-import { Facebook, Google } from '@mui/icons-material'
+import { GoogleLogin } from '@react-oauth/google'
+
 import { Box, Button, Stack, TextField, Typography } from '@mui/material'
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
 
-const Register = forwardRef(( { onClick, ...props }, ref ) => { 
+const Register = forwardRef(( { onClick, onGoogleSuccess, onGoogleError, ...props }, ref ) => { 
     const [userNameValue, setUserNameValue] = useState('')
     const [emailValue, setEmailValue] = useState('')
     const [passwordValue, setPasswordValue] = useState('')
@@ -258,8 +259,24 @@ const Register = forwardRef(( { onClick, ...props }, ref ) => {
 
                 <Button variant='outlined' onClick={handleValidator}>Đăng ký</Button>
                 <Typography sx={{ textAlign: 'center' }} variant='body1'> Hoặc </Typography>
-                <Button variant='outlined'>Đăng nhập bằng Facebook <Facebook /></Button>
-                <Button variant='outlined'>Đăng nhập bằng Google <Google/></Button>
+                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                    <GoogleLogin
+                        onSuccess={(credentialResponse) => {
+                            onGoogleSuccess?.(credentialResponse.credential)
+                        }}
+                        onError={() => {
+                            onGoogleError?.()
+                        }}
+                        useOneTap={false}
+                        auto_select={false}
+                        theme="outline"
+                        size="large"
+                        text="signin_with"
+                        shape="rectangular"
+                        logo_alignment="left"
+                        width="100%"
+                    />
+                </Box>
             </Stack>
         </Box>
     )
