@@ -38,6 +38,7 @@ const ChangePasswordPage = lazy(() => import('./ProFilesDetailPages/ChangePasswo
 const PrivatePage = lazy(() => import('./ProFilesDetailPages/PrivatePage'))
 const AccountOptionPage = lazy(() => import('./ProFilesDetailPages/AccountOptionPage'))
 import { logoutApi } from '~/apis'
+import { getAvatar } from '~/utils/getAvatar'
 
 export default function Profile() {
     const { data: user, pending } = useSelector(userSelector)
@@ -107,6 +108,7 @@ export default function Profile() {
             <CircularProgress/>
         </Box>)
     }
+
     return (
         <Box sx={{ height: '100%' }}>
             <MyTabs>
@@ -302,8 +304,7 @@ export default function Profile() {
                                         <Avatar 
                                             sx={{ width: 24, height: 24 }} 
                                             alt='Your Avatar'
-                                            src= { user.avatar !== '' ?
-                                                `${API_ROOT}/v1/manage/users/profile/get-image/avatar/?t=${Date.now()}` : 
+                                            src= { user.avatar !== '' ? getAvatar(user.avatar) : 
                                                 'https://www.shutterstock.com/image-vector/default-avatar-profile-icon-social-600nw-2409187029.jpg'
                                             }/>
                                     </IconButton>

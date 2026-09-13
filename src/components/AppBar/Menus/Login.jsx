@@ -67,22 +67,24 @@ const Login = forwardRef(({ onClick, onGoogleSuccess, onGoogleError, ...props },
                 <Typography sx={{ textAlign: 'center' }} variant='body1'> Hoặc </Typography>
 
                 {/* Google OAuth Login */}
-                <GoogleLogin
-                    onSuccess={(credentialResponse) => {
-                        onGoogleSuccess?.(credentialResponse.credential)
-                    }}
-                    onError={() => {
-                        onGoogleError?.()
-                    }}
-                    useOneTap={false}
-                    auto_select={false}
-                    theme="outline"
-                    size="large"
-                    text="signin_with"
-                    shape="rectangular"
-                    logo_alignment="left"
-                    width="100%"
-                />
+                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                    <GoogleLogin
+                        onSuccess={(credentialResponse) => {
+                            onGoogleSuccess?.(credentialResponse.credential)
+                        }}
+                        onError={() => {
+                            onGoogleError?.()
+                        }}
+                        useOneTap={false}
+                        auto_select={false}
+                        theme="outline"
+                        size="large"
+                        text="signin_with"
+                        shape="rectangular"
+                        logo_alignment="left"
+                        width="100%"
+                    />
+                </Box>
 
             </Stack>
         </Box>

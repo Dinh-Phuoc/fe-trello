@@ -29,6 +29,7 @@ import { toast } from 'react-toastify'
 import { useDispatch, useSelector } from 'react-redux'
 import { userSelector } from '~/redux/selector'
 import { updateProfileThunk, uploadAvatarThunk, uploadImageHeaderThunk } from '~/redux/slice/userSlice'
+import { getAvatar } from '~/utils/getAvatar'
 
 const DocumentPage = () => {
     // const [user, setUser] = useState()
@@ -422,7 +423,7 @@ const DocumentPage = () => {
                                         objectFit: 'cover',
                                         verticalAlign: 'top'
                                     }}
-                                    src={`${API_ROOT}/v1/manage/users/profile/get-image/avatar/?t=${Date.now()}`}
+                                    src={getAvatar(user.avatar)}
                                     ></img>
                                 </Box> 
                                 : 

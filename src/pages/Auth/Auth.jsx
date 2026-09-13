@@ -227,6 +227,8 @@ export default function Auth() {
                                         <Register
                                             ref={childrenRegisterRef}
                                             onClick={handleRegister}
+                                            onGoogleSuccess={handleGoogleSuccess}
+                                            onGoogleError={handleGoogleError}
                                         />
                                     </MyTabPanel>
                                 </MyTabs>
