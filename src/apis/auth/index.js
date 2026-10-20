@@ -1,4 +1,4 @@
-import { AUTH_ROOT } from '~/utils/constant'
+import { API_ROOT } from '~/utils/constant'
 import instance from '~/apis/interceptors'
 
 const TIMEOUT = 10000
@@ -7,7 +7,7 @@ const REFRESH_TIMEOUT = 8000
 
 export const loginApi = async (infoAccount) => {
     const response = await instance.post(
-        `${AUTH_ROOT}/auth/login`,
+        `${API_ROOT}/auth/login`,
         infoAccount,
         { timeout: TIMEOUT }
     )
@@ -16,7 +16,7 @@ export const loginApi = async (infoAccount) => {
 
 export const refreshApi = async () => {
     const response = await instance.post(
-        `${AUTH_ROOT}/auth/refresh`,
+        `${API_ROOT}/auth/refresh`,
         {},
         { timeout: REFRESH_TIMEOUT }
     )
@@ -25,7 +25,7 @@ export const refreshApi = async () => {
 
 export const logoutApi = async () => {
     const response = await instance.delete(
-        `${AUTH_ROOT}/auth/logout`,
+        `${API_ROOT}/auth/logout`,
         { timeout: TIMEOUT }
     )
     return response
@@ -33,7 +33,7 @@ export const logoutApi = async () => {
 
 export const registerApi = async (infoAccount) => {
     const response = await instance.post(
-        `${AUTH_ROOT}/auth/register`,
+        `${API_ROOT}/auth/register`,
         infoAccount,
         { timeout: TIMEOUT }
     )
@@ -42,7 +42,7 @@ export const registerApi = async (infoAccount) => {
 
 export const googleAuthApi = async (credential) => {
     const response = await instance.post(
-        `${AUTH_ROOT}/auth/google`,
+        `${API_ROOT}/auth/google`,
         { credential },
         { timeout: TIMEOUT }
     )
@@ -51,7 +51,7 @@ export const googleAuthApi = async (credential) => {
 
 export const getInforUserApi = async () => {
     const response = await instance.get(
-        `${AUTH_ROOT}/auth/profile`,
+        `${API_ROOT}/auth/profile`,
         { timeout: TIMEOUT }
     )
     return response.data
