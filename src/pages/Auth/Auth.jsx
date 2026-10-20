@@ -35,7 +35,7 @@ import {
     StyledContainer
 } from './Auth.styled'
 
-const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID
 
 const ERROR_MESSAGE = 'Tài khoản hoặc mật khẩu không chính xác nhé bae'
 const GOOGLE_ERROR_MESSAGE = 'Đăng nhập bằng Google thất bại, thử lại nhé!'
