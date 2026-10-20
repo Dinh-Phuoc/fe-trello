@@ -1,7 +1,6 @@
 // Reusable list of social/contact links rendered inside the contact menus
 export const CV_URL =
-    'https://cv.fullstack.edu.vn/view/50a59a03-d012-4aa7-9f7d-c3581e906d03?token=rMzDCgAkeAS4CcwOG4G0WCgoSCwOgCW'
-
+    'https://canva.link/3bs2freauiumuj8'
 export const SOCIAL_LINKS = [
     {
         id: 'facebook',

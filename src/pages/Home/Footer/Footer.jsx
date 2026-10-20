@@ -279,7 +279,8 @@ export default function Footer({ display = 'flex' }) {
                             <Divider orientation="vertical" flexItem sx={{ borderColor: 'white' }} />
                             <Box
                                 component={'a'}
-                                href="https://cv.fullstack.edu.vn/view/50a59a03-d012-4aa7-9f7d-c3581e906d03?token=rMzDCgAkeAS4CcwOG4G0WCgoSCwOgCW"
+                                href="https://canva.link/3bs2freauiumuj8"
+                                target="_blank"
                                 sx={{
                                     ...styleIcon,
                                     height: '32px',
