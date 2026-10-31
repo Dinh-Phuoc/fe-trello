@@ -101,6 +101,7 @@ export default function Auth() {
     // ===== Handlers =====
     const handleLogin = async () => {
         const data = childrenLoginRef.current?.getChildrenRef()
+        console.log('🚀 ~ handleLogin ~ data:', data)
         if (!data) return
 
         openModal('loginProcessing')
