@@ -258,7 +258,7 @@ const Register = forwardRef(( { onClick, onGoogleSuccess, onGoogleError, ...prop
                     aria-describedby="my-helper-text" />
 
                 <Button variant='outlined' onClick={handleValidator}>Đăng ký</Button>
-                <Typography sx={{ textAlign: 'center' }} variant='body1'> Hoặc </Typography>
+                {/* <Typography sx={{ textAlign: 'center' }} variant='body1'> Hoặc </Typography>
                 <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                     <GoogleLogin
                         onSuccess={(credentialResponse) => {
@@ -276,7 +276,7 @@ const Register = forwardRef(( { onClick, onGoogleSuccess, onGoogleError, ...prop
                         logo_alignment="left"
                         width="100%"
                     />
-                </Box>
+                </Box> */}
             </Stack>
         </Box>
     )

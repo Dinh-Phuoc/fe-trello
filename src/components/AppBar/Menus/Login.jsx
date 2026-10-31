@@ -64,10 +64,10 @@ const Login = forwardRef(({ onClick, onGoogleSuccess, onGoogleError, ...props },
 
 
                 <Button variant='outlined' onClick={passProps.onClick}>Đăng nhập</Button>
-                <Typography sx={{ textAlign: 'center' }} variant='body1'> Hoặc </Typography>
+                {/* <Typography sx={{ textAlign: 'center' }} variant='body1'> Hoặc </Typography> */}
 
                 {/* Google OAuth Login */}
-                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                {/* <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                     <GoogleLogin
                         onSuccess={(credentialResponse) => {
                             onGoogleSuccess?.(credentialResponse.credential)
@@ -84,7 +84,7 @@ const Login = forwardRef(({ onClick, onGoogleSuccess, onGoogleError, ...props },
                         logo_alignment="left"
                         width="100%"
                     />
-                </Box>
+                </Box> */}
 
             </Stack>
         </Box>
